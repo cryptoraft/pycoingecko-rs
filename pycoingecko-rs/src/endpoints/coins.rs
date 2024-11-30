@@ -1,4 +1,4 @@
-use reqwest::{Client, Error};
+use reqwest::Client;
 use crate::error::ApiError;
 
 pub async fn get_all_coins(_client: &Client, base_url: &str) -> Result<Vec<String>, ApiError> {
@@ -9,8 +9,7 @@ pub async fn get_all_coins(_client: &Client, base_url: &str) -> Result<Vec<Strin
     let client = reqwest::Client::new();
     let response = client
         .get(&url)
-        .header("Authorization", format!("Bearer {}", formatted_api_key))
-        
+        .header("Authorization", format!("Bearer {}", formatted_api_key))  
         .send()
         .await
         .map_err(|e| ApiError::RequestError(e.to_string()))?;

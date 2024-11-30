@@ -1,15 +1,20 @@
 use std::collections::HashMap;
 use reqwest::{Error, Client};
 use pycoingecko_rs::client::CoinGeckoAPI;
+use dotenv::dotenv;
+use std::env;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    // Set your actual API key here
-    let api_key: Option<String> = Some("CG-F49RzomXupv1usPxpaWFqNi4".to_string());
-    let demo_api_key: Option<String> = Some("CG-F49RzomXupv1usPxpaWFqNi4".to_string());
+    // Load environment variables from a .env file
+    dotenv().ok();
 
-    // Ensure the key is valid before proceeding
-    if demo_api_key.is_none() {
+    // Retrieve API keys from environment variables
+    let api_key: Option<String> = env::var("API_KEY").ok(); // Get the API key from the environment variable
+    let demo_api_key: Option<String> = env::var("DEMO_API_KEY").ok(); // Get demo API key from environment variable
+
+    // Ensure the keys are valid before proceeding
+    if api_key.is_none() || demo_api_key.is_none() {
         eprintln!("API Key is missing or invalid.");
         return Ok(());
     }
@@ -17,7 +22,7 @@ async fn main() -> Result<(), Error> {
     println!("Using API Key: {:?}", api_key); // Debug print to check the API key
 
     let cloned_api_key = demo_api_key.clone();
-    let coin_gecko_api = CoinGeckoAPI::new(api_key, 3, demo_api_key);
+    let _coin_gecko_api = CoinGeckoAPI::new(api_key, 3, demo_api_key);
 
     let url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum";
     let mut params = HashMap::new();

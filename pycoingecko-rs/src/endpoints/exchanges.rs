@@ -1,4 +1,4 @@
-use reqwest::{Client, Error};
+use reqwest::Client;
 use crate::error::ApiError;
 use std::collections::HashMap;
 

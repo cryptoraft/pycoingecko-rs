@@ -1,4 +1,4 @@
-use reqwest::{Client, Error};
+use reqwest::Client;
 use crate::error::ApiError;
 
 pub async fn ping(client: &Client, base_url: &str) -> Result<String, ApiError> {
