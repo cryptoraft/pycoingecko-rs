@@ -71,8 +71,12 @@ async fn test_get_all_coins_parsing_error() {
     match result {
         Ok(_) => panic!("Expected parsing error, but got successful response"),
         Err(ApiError::ParsingError(msg)) => {
-            assert!(msg.contains("invalid JSON"));
+            assert!(
+                msg.contains("error decoding response body"),
+                "Error message did not contain expected text: {}",
+                msg
+            );
         },
-        Err(_) => panic!("Expected a ParsingError, but got a different error"),
+        Err(e) => panic!("Expected a ParsingError, but got a different error: {:?}", e),
     }
 }
