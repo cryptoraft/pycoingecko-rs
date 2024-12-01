@@ -1,14 +1,13 @@
-use serde::Deserialize;
-
-#[derive(Deserialize, Debug)]
-pub struct CoinData {
+#[derive(Debug, serde::Deserialize)]
+pub struct Coin {
     pub id: String,
     pub symbol: String,
     pub name: String,
-    pub market_data: MarketData,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Debug, serde::Deserialize)]
 pub struct MarketData {
-    pub current_price: serde_json::Value,
+    pub id: String,
+    pub market_cap: f64,
+    pub volume: f64,
 }

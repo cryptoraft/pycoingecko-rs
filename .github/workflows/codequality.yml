@@ -1,0 +1,69 @@
+on: [push, pull_request]
+
+name: Codequality Lints
+
+jobs:
+  codequality:
+    name: Codequality
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain:
+          - 1.70.0
+          - stable
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          components: rustfmt, clippy
+
+      - name: Run cargo fmt
+        working-directory: pycoingecko-rs
+        run: cargo fmt --all -- --check
+
+      - name: Run cargo clippy
+        working-directory: pycoingecko-rs
+        run: cargo clippy --all-targets -- -D warnings
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.draft == false }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Get rustc version
+        id: rustc-version
+        run: echo "version=$(rustc --version | cut -d ' ' -f 2)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Cache tarpaulin
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/bin/cargo-tarpaulin
+          key: ${{ runner.os }}-tarpaulin-${{ env.version }}
+
+      - name: Install tarpaulin
+        if: steps.tarpaulin-cache.outputs.cache-hit != 'true'
+        run: cargo install cargo-tarpaulin
+
+      - name: Generate code coverage
+        working-directory: pycoingecko-rs
+        run: cargo tarpaulin --verbose --timeout 120 --out Xml --all --release
+
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
