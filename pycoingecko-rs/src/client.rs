@@ -10,7 +10,7 @@ pub struct CoinGeckoAPI {
 }
 
 impl CoinGeckoAPI {
-    pub fn new(api_key: Option<String>, _retries: usize, demo_api_key: Option<String>) -> Self {
+    pub fn new(_api_key: Option<String>, _retries: usize, demo_api_key: Option<String>) -> Self {
         let mut extra_params = None;
 
         let api_base_url = if let Some(demo_api_key) = demo_api_key {
